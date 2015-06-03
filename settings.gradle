@@ -1,0 +1,4 @@
+rootProject.name = 'docker'
+include 'docker-controller'
+include 'marathon-scaler'
+

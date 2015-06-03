@@ -1,0 +1,55 @@
+group 'de.schub.docker_controller'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'docker'
+
+
+mainClassName = "de.schub.docker_controller.Main"
+
+
+repositories {
+    mavenCentral()
+}
+
+run {
+    if(project.hasProperty('args')){
+        args project.args.split('\\s+')
+    }
+}
+
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
+
+docker {
+    baseImage "develar/java:8u45"
+    maintainer 'Florian Pfitzer "florian@pfitzer.me"'
+}
+
+distDocker {
+    runCommand "apk --update add bash"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes "Main-Class": "$mainClassName"
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude "META-INF/*.RSA", "META-INF/*.SF","META-INF/*.DSA"
+    with jar
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile "com.ecwid.consul:consul-api:1.1.2"
+    compile "com.spotify:docker-client:2.7.7"
+    compile "org.slf4j:slf4j-simple:1.7.6"
+    compile "commons-cli:commons-cli:1.3"
+    compile "com.beust:jcommander:1.30"
+}
