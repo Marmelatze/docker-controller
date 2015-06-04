@@ -9,6 +9,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
+import de.schub.docker_controller.Metadata.ContainerMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,10 @@ public class Registry
         consul.setKVValue("container/" + container.id(), json);
     }
 
-    protected void removeContainer(String containerId)
+    protected void removeContainer(ContainerMetadata metadata)
     {
+        logger.info("Remove old metadata " + metadata.containerId);
+        consul.deleteKVValue("container/" + metadata.containerId);
     }
 
     public void sync()
@@ -94,8 +97,7 @@ public class Registry
             if (containerIndex.containsKey(metadata.containerId)) {
                 continue;
             }
-            logger.info("Remove old metadata " + metadata.containerId);
-            consul.deleteKVValue("container/" + metadata.containerId);
+            removeContainer(metadata);
         }
         logger.info("finished");
     }

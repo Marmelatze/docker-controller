@@ -13,7 +13,6 @@ public class Main
 
     public static void main(String[] args)
     {
-
         AppParameters parameters = new AppParameters();
         JCommander jCommander = new JCommander(parameters, args);
         if (parameters.help) {
