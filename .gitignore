@@ -1,5 +1,6 @@
 .gradle
 build/
+*/src/dagger/
 
 # Ignore Gradle GUI config
 gradle-app.setting

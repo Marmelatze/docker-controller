@@ -19,4 +19,17 @@ public class ContainerMetadata
     {
         return null;
     }
+
+    @Override
+    public String toString()
+    {
+        return "ContainerMetadata{" +
+               "containerId='" + containerId + '\'' +
+               ", host='" + host + '\'' +
+               ", ip='" + ip + '\'' +
+               ", mesosTaskId='" + mesosTaskId + '\'' +
+               ", marathonAppId='" + marathonAppId + '\'' +
+               ", marathonVersion='" + marathonVersion + '\'' +
+               '}';
+    }
 }

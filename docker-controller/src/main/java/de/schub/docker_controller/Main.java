@@ -1,6 +1,7 @@
 package de.schub.docker_controller;
 
 import com.beust.jcommander.JCommander;
+import de.schub.docker_controller.Metadata.DaggerDockerMetadataComponent;
 
 public class Main
 {
@@ -20,6 +21,13 @@ public class Main
             System.exit(1);
         }
 
-        new DockerController(parameters);
+        DockerController dockerController = DaggerDockerController.builder()
+            .dockerMetadataComponent(DaggerDockerMetadataComponent.create())
+            .dockerControllerModule(new DockerControllerModule(parameters))
+            .build()
+            ;
+        dockerController.getRegistry().sync();
+
+        System.exit(0);
     }
 }

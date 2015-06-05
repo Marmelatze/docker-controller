@@ -6,8 +6,8 @@ import com.beust.jcommander.Parameters;
 @Parameters(separators = "=")
 public class AppParameters
 {
-    @Parameter(names = {"-docker"}, description = "Docker Endpoint")
-    public String dockerEndpoint = "unix:///var/run/docker.sock";
+    @Parameter(names = {"-collector"}, description = "Metadata Collector")
+    public String metadataCollector = "docker://192.168.178.55:2375";
 
     @Parameter(names = {"-consul"}, description = "Consul Server")
     public String consulServer = "http://localhost:8500";

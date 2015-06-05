@@ -11,6 +11,4 @@ public interface MetadataCollector
     ContainerMetadata get(String containerId) throws MetadataCollectorException;
 
     List<ContainerMetadata> getAll() throws MetadataCollectorException;
-
-    boolean supports(URI endpoint);
 }

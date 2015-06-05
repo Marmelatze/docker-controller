@@ -27,10 +27,6 @@ public class Main
 
         for (App app : apps) {
             Collection<Task> tasks = marathon.getAppTasks(app.getId()).getTasks();
-            for (Task task : tasks) {
-                ContainerMetadata metadata =
-            }
-            System.out.println(appTasks);
         }
     }
 }

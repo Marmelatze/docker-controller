@@ -1,23 +1,34 @@
 package de.schub.docker_controller;
 
-import com.ecwid.consul.json.GsonFactory;
-import com.ecwid.consul.v1.ConsulClient;
-import com.ecwid.consul.v1.agent.model.Service;
-import com.ecwid.consul.v1.kv.model.GetValue;
-import com.google.gson.JsonSyntaxException;
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.messages.Container;
-import com.spotify.docker.client.messages.ContainerInfo;
-import de.schub.docker_controller.Metadata.ContainerMetadata;
+import de.schub.docker_controller.Metadata.Collector.MetadataCollector;
+import de.schub.docker_controller.Metadata.Collector.MetadataCollectorFactory;
+import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import javax.inject.Inject;
 
 public class Registry
 {
     Logger logger = LoggerFactory.getLogger(Registry.class);
+
+    private MetadataCollector metadataCollector;
+
+    @Inject
+    public Registry(MetadataCollector metadataCollector)
+    {
+        this.metadataCollector = metadataCollector;
+    }
+
+    public void sync()
+    {
+        try {
+            metadataCollector.getAll();
+        } catch (MetadataCollectorException e) {
+            logger.error("Failed to get metadata", e);
+        }
+    }
+    /*
     protected ConsulClient consul;
     protected DockerClient docker;
 
@@ -91,7 +102,7 @@ public class Registry
                 logger.error("Failed to parse json from " + value.getKey());
                 continue;
             }
-            if (!Objects.equals(metadata.host, DockerController.hostname)) {
+            if (!Objects.equals(metadata.host, DockerController2.hostname)) {
                 continue;
             }
             if (containerIndex.containsKey(metadata.containerId)) {
@@ -100,5 +111,5 @@ public class Registry
             removeContainer(metadata);
         }
         logger.info("finished");
-    }
+    }*/
 }
