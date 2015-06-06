@@ -7,12 +7,34 @@ import de.schub.docker_controller.Metadata.Collector.DockerMetadataCollectorProv
 import de.schub.docker_controller.Metadata.Collector.MetadataCollectorFactory;
 import de.schub.docker_controller.Metadata.Collector.MetadataCollectorProvider;
 
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
 @Module
 public class DockerMetadataModule
 {
+    String hostname;
+
+    public DockerMetadataModule(String hostname)
+    {
+        this.hostname = hostname;
+    }
+
+    @Provides
+    @Named("hostname")
+    String getHostname()
+    {
+        return hostname;
+    }
+
+    @Provides
+    @Named("foo")
+    String getFoo()
+    {
+        return "foo";
+    }
+
     @Provides
     DockerClientFactory getDockerClientFactory()
     {
@@ -20,9 +42,11 @@ public class DockerMetadataModule
     }
 
     @Provides
-    DockerMetadataCollectorProvider getDockerMetadataCollectorProvider(DockerClientFactory dockerClientFactory)
+    DockerMetadataCollectorProvider getDockerMetadataCollectorProvider(
+        DockerClientFactory dockerClientFactory,
+        @Named("hostname") String hostname)
     {
-        return new DockerMetadataCollectorProvider(dockerClientFactory);
+        return new DockerMetadataCollectorProvider(dockerClientFactory, hostname);
     }
 
     @Provides

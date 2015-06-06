@@ -12,6 +12,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -20,11 +22,14 @@ import java.util.stream.Collectors;
 public class DockerMetadataCollectorProvider implements MetadataCollectorProvider
 {
     protected final DockerClientFactory dockerClientFactory;
+    protected final String hostname;
     Logger logger = LoggerFactory.getLogger(DockerMetadataCollectorProvider.class);
 
-    public DockerMetadataCollectorProvider(DockerClientFactory dockerClientFactory)
+    @Inject
+    public DockerMetadataCollectorProvider(DockerClientFactory dockerClientFactory, @Named("hostname") String hostname)
     {
         this.dockerClientFactory = dockerClientFactory;
+        this.hostname = hostname;
     }
 
     @Override
@@ -77,7 +82,7 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
 
             ContainerMetadata metadata = new ContainerMetadata();
             metadata.containerId = container.id();
-            //metadata.host = DockerController2.hostname;
+            metadata.host = hostname;
             metadata.ip = container.networkSettings().ipAddress();
 
             // loop through env variables

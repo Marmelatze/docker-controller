@@ -6,6 +6,7 @@ import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.Info;
 import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.DockerClientFactory;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
@@ -19,10 +20,17 @@ import static org.mockito.Mockito.*;
 
 public class DockerMetadataCollectorProviderTest
 {
+    DockerMetadataCollectorProvider collector;
+
+    @Before
+    public void setUp() throws Exception
+    {
+        collector = new DockerMetadataCollectorProvider(new DockerClientFactory(), "localhost");
+    }
+
     @Test()
     public void testParseURI() throws Exception
     {
-        DockerMetadataCollectorProvider collector = new DockerMetadataCollectorProvider(new DockerClientFactory());
         assertEquals("http://fake-host:2375", collector.parseURI(URI.create("docker://fake-host:2375")).toString());
         assertEquals("unix:///var/run/docker.sock", collector.parseURI(URI.create("docker:///var/run/docker.sock")).toString());
     }
@@ -32,7 +40,6 @@ public class DockerMetadataCollectorProviderTest
     {
         String dockerHost = System.getProperty("docker.host");
         assumeNotNull(dockerHost);
-        DockerMetadataCollectorProvider collector = new DockerMetadataCollectorProvider(new DockerClientFactory());
         collector.getCollector(URI.create(dockerHost)).getAll();
     }
 
@@ -57,7 +64,7 @@ public class DockerMetadataCollectorProviderTest
         DockerClientFactory dockerClientFactory = mock(DockerClientFactory.class);
         when(dockerClientFactory.get(any(URI.class))).thenReturn(dockerClient);
 
-        DockerMetadataCollectorProvider collector = new DockerMetadataCollectorProvider(dockerClientFactory);
+        DockerMetadataCollectorProvider collector = new DockerMetadataCollectorProvider(dockerClientFactory, "localhost");
         ContainerMetadata metadata = collector.getCollector(URI.create("docker://foo:2375")).get("fake_container");
         assertEquals("123asfd", metadata.containerId);
         assertEquals("1.2.3.4", metadata.ip);
