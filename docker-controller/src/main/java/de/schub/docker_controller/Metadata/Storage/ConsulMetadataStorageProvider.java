@@ -183,8 +183,13 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         @Override
         public Map<String, ContainerService> getServices()
         {
+            // get services from consul agent
             if (!useRemoteServices) {
-                // get services from consul agent
+
+                // init if index is empty
+                if (containerIndex.size() == 0) {
+                    this.getAll();
+                }
                 Map<String, ContainerService> services = new HashMap<>();
                 Map<String, Service> agentServices = consul.agentClient().getServices();
                 for (Map.Entry<String, Service> entry : agentServices.entrySet()) {
@@ -198,6 +203,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
                     String containerName = containerNames[1];
                     ContainerMetadata metadata = containerIndex.getByName(getClusterNode(), containerName);
                     if (null == metadata) {
+                        consul.agentClient().deregister(service.getId());
                         continue;
                     }
                     services.put(metadata.containerId, new ContainerService());
@@ -205,8 +211,6 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
 
                 return services;
             }
-
-            // get services from consul catalog
 
             return null;
         }

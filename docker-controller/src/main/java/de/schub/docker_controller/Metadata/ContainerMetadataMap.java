@@ -87,4 +87,9 @@ public class ContainerMetadataMap
             .forEach(entry -> removeByName(entry.getKey()));
         ;
     }
+
+    public int size()
+    {
+        return idMap.size();
+    }
 }

@@ -4,6 +4,7 @@ import de.schub.docker_controller.Metadata.Collector.MetadataCollector;
 import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
 import de.schub.docker_controller.Metadata.Storage.MetadataStorage;
+import de.schub.docker_controller.Metadata.Storage.ServiceDiscoveryStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,9 @@ public class Registry
         try {
             List<ContainerMetadata> metadatas = metadataCollector.getAll();
             storage.set(metadatas);
+            if (storage instanceof ServiceDiscoveryStorage) {
+                ((ServiceDiscoveryStorage) storage).getServices();
+            }
         } catch (MetadataCollectorException e) {
             logger.error("Failed to get metadata", e);
         }
