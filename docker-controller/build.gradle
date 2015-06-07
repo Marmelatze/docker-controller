@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
 }
 
@@ -21,6 +22,7 @@ apply plugin: 'application'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 mainClassName = "de.schub.docker_controller.Main"
@@ -54,7 +56,13 @@ task fatJar(type: Jar) {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile "org.mockito:mockito-core:1.+"
-    compile "com.ecwid.consul:consul-api:1.1.2"
+
+    compile "com.google.code.gson:gson:2.3"
+
+    compile "com.orbitz.consul:consul-client:0.9.3"
+    compile 'org.apache.cxf:cxf-rt-rs-client:3.0.3'
+    compile 'org.apache.cxf:cxf-rt-transports-http-hc:3.0.3'
+
     compile "com.spotify:docker-client:2.7.7"
     compile "org.slf4j:slf4j-simple:1.7.6"
     compile "commons-cli:commons-cli:1.3"

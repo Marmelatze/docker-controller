@@ -1,8 +1,5 @@
 package de.schub.docker_controller.Metadata.Collector;
 
-import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
-import de.schub.docker_controller.Metadata.Exception.UnkownEndpointException;
-
 import javax.inject.Inject;
 import java.net.URI;
 import java.util.List;
@@ -24,7 +21,7 @@ public class DefaultMetadataCollectorFactory implements MetadataCollectorFactory
     }
 
     @Override
-    public MetadataCollector getCollector(URI endpoint)
+    public MetadataCollector get(URI endpoint)
     {
         for (MetadataCollectorProvider provider : providers) {
             if (provider.supports(endpoint)) {

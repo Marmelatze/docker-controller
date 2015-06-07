@@ -5,7 +5,7 @@ import dagger.Provides;
 import de.schub.docker_controller.Metadata.DockerMetadataComponent;
 
 @Component(modules = DockerControllerModule.class,
-    dependencies = {DockerMetadataComponent.class}
+        dependencies = {DockerMetadataComponent.class}
 )
 public interface DockerController
 {

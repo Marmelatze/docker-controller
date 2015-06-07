@@ -35,7 +35,7 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
     @Override
     public MetadataCollector getCollector(URI endpoint)
     {
-        return new DockerMetadataCollector(dockerClientFactory.get(endpoint));
+        return new DockerMetadataCollector(dockerClientFactory.get(parseURI(endpoint)));
     }
 
     protected URI parseURI(URI endpoint)
@@ -84,6 +84,8 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
             metadata.containerId = container.id();
             metadata.host = hostname;
             metadata.ip = container.networkSettings().ipAddress();
+            // remove / at the beginning
+            metadata.name = container.name().substring(1);
 
             // loop through env variables
             for (String env : container.config().env()) {

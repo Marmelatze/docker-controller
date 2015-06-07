@@ -1,6 +1,6 @@
 package de.schub.docker_controller.Metadata.Storage;
 
-import de.schub.docker_controller.Metadata.Service;
+import de.schub.docker_controller.Metadata.ContainerService;
 
 import java.util.List;
 import java.util.Map;
@@ -8,12 +8,7 @@ import java.util.Map;
 public interface ServiceDiscoveryStorage
 {
     /**
-     * @return services running on this instance
+     * @return all services running in the cluster. Container ID as key
      */
-    List<Service> getLocalServices();
-
-    /**
-     * @return all services running in the cluster
-     */
-    Map<String, Service> getAllServices();
+    Map<String, ContainerService> getServices();
 }

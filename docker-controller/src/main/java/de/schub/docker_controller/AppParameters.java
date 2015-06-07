@@ -12,8 +12,8 @@ public class AppParameters
     @Parameter(names = {"-collector"}, description = "Metadata Collector")
     public String metadataCollector = "docker://192.168.178.55:2375";
 
-    @Parameter(names = {"-consul"}, description = "Consul Server")
-    public String consulServer = "http://localhost:8500";
+    @Parameter(names = {"-storage"}, description = "Metadata Storage")
+    public String metadataStorage = "consul://192.168.178.55:8500";
 
     @Parameter(names = {"-hostname"}, description = "Hostname to be reported")
     public String hostname;

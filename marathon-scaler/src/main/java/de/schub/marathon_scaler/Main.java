@@ -12,9 +12,9 @@ import java.util.List;
 public class Main
 {
     static {
-        // set a system property such that Simple Logger will include timestamp
+        // add a system property such that Simple Logger will include timestamp
         System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
-        // set a system property such that Simple Logger will include timestamp in the given format
+        // add a system property such that Simple Logger will include timestamp in the given format
         System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "dd-MM-yy HH:mm:ss");
     }
 

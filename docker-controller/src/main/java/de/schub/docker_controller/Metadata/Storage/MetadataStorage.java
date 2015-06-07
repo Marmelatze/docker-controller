@@ -8,10 +8,16 @@ public interface MetadataStorage
 {
     ContainerMetadata get(String containerId);
 
+    ContainerMetadata get(String nodeId, String containerId);
+
     List<ContainerMetadata> getAll();
 
-    void set(ContainerMetadata metadata);
+    void add(ContainerMetadata metadata);
+
+    /**
+     * @param metadatas
+     */
+    void set(List<ContainerMetadata> metadatas);
 
     void delete(ContainerMetadata metadata);
-
 }

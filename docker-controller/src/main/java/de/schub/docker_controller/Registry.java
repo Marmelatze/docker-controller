@@ -1,32 +1,40 @@
 package de.schub.docker_controller;
 
 import de.schub.docker_controller.Metadata.Collector.MetadataCollector;
-import de.schub.docker_controller.Metadata.Collector.MetadataCollectorFactory;
+import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
+import de.schub.docker_controller.Metadata.Storage.MetadataStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class Registry
 {
     Logger logger = LoggerFactory.getLogger(Registry.class);
 
-    private MetadataCollector metadataCollector;
+    private final MetadataCollector metadataCollector;
+    private final MetadataStorage storage;
 
     @Inject
-    public Registry(MetadataCollector metadataCollector)
+    public Registry(MetadataCollector metadataCollector, MetadataStorage storage)
     {
         this.metadataCollector = metadataCollector;
+        this.storage = storage;
     }
 
     public void sync()
     {
+        logger.info("Updating container metadata");
         try {
-            metadataCollector.getAll();
+            List<ContainerMetadata> metadatas = metadataCollector.getAll();
+            storage.set(metadatas);
         } catch (MetadataCollectorException e) {
             logger.error("Failed to get metadata", e);
         }
+
+
     }
     /*
     protected ConsulClient consul;

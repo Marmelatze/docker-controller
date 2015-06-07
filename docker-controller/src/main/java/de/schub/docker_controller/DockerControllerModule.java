@@ -3,7 +3,7 @@ package de.schub.docker_controller;
 import dagger.Module;
 import dagger.Provides;
 import de.schub.docker_controller.Metadata.Collector.MetadataCollectorFactory;
-import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
+import de.schub.docker_controller.Metadata.Storage.MetadataStorageFactory;
 
 import java.net.URI;
 
@@ -26,11 +26,13 @@ public class DockerControllerModule
     @Provides
     Registry getRegistry(
         AppParameters parameters,
-        MetadataCollectorFactory metadataCollectorFactory
+        MetadataCollectorFactory metadataCollectorFactory,
+        MetadataStorageFactory metadataStorageFactory
     )
     {
         return new Registry(
-            metadataCollectorFactory.getCollector(URI.create(parameters.metadataCollector))
+            metadataCollectorFactory.get(URI.create(parameters.metadataCollector)),
+            metadataStorageFactory.get(URI.create(parameters.metadataStorage))
         );
     }
 }
