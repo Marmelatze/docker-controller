@@ -1,6 +1,6 @@
 package de.schub.docker_controller.Metadata.Collector;
 
-import com.ecwid.consul.v1.ConsulClient;
+import com.orbitz.consul.Consul;
 import de.schub.docker_controller.Metadata.ConsulClientFactory;
 import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.Exception.MetadataCollectorException;
@@ -41,9 +41,9 @@ public class ConsulDockerMetadataCollectorProvider implements MetadataCollectorP
 
     class ConsulDockerMetadataCollector implements MetadataCollector
     {
-        private final ConsulClient consulClient;
+        private final Consul consulClient;
 
-        public ConsulDockerMetadataCollector(ConsulClient consulClient)
+        public ConsulDockerMetadataCollector(Consul consulClient)
         {
             this.consulClient = consulClient;
         }

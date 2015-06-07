@@ -1,13 +1,13 @@
 package de.schub.docker_controller.Metadata;
 
-import com.ecwid.consul.v1.ConsulClient;
+import com.orbitz.consul.Consul;
 
 import java.net.URI;
 
 public class ConsulClientFactory
 {
-    public ConsulClient get(URI endpoint)
+    public Consul get(URI endpoint)
     {
-        return new ConsulClient(endpoint.getHost(), endpoint.getPort());
+        return Consul.newClient(endpoint.getHost(), endpoint.getPort());
     }
 }

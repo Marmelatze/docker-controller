@@ -1,15 +1,16 @@
 package de.schub.docker_controller.Metadata.Storage;
 
-import com.ecwid.consul.v1.ConsulClient;
-import com.ecwid.consul.v1.agent.model.Self;
-import com.ecwid.consul.v1.agent.model.Service;
-import com.ecwid.consul.v1.kv.model.GetValue;
 import com.google.gson.Gson;
+import com.orbitz.consul.Consul;
+import com.orbitz.consul.model.health.Service;
 import de.schub.docker_controller.Metadata.*;
 
 import javax.inject.Inject;
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ConsulMetadataStorageProvider implements MetadataStorageProvider
@@ -42,7 +43,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
 
     class ConsulMetadataStorage implements MetadataStorage, ServiceDiscoveryStorage
     {
-        private final ConsulClient consul;
+        private final Consul consul;
 
         private final String prefix;
 
@@ -63,7 +64,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
 
         private boolean connected = false;
 
-        public ConsulMetadataStorage(ConsulClient consul, String prefix, boolean useRemoteServices)
+        public ConsulMetadataStorage(Consul consul, String prefix, boolean useRemoteServices)
         {
             this.consul = consul;
             if (null == prefix || 0 == prefix.length()) {
@@ -90,8 +91,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             if (connected) {
                 return;
             }
-            Self value = consul.getAgentSelf().getValue();
-            node = new ClusterNode(value.getConfig().getNodeName());
+            node = new ClusterNode(consul.agentClient().getAgent().getConfig().getNodeName());
             connected = true;
         }
 
@@ -101,11 +101,12 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
          * @param value
          * @return
          */
-        private ContainerMetadata decode(GetValue value)
+        private ContainerMetadata decode(String value)
         {
-            byte[] bytesEncoded = Base64.getDecoder().decode(value.getValue());
-
-            ContainerMetadata metadata = gson.fromJson(new String(bytesEncoded), ContainerMetadata.class);
+            if (null == value) {
+                return null;
+            }
+            ContainerMetadata metadata = gson.fromJson(value, ContainerMetadata.class);
             containerIndex.add(metadata);
 
             return metadata;
@@ -114,7 +115,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         @Override
         public ContainerMetadata get(String containerId)
         {
-            ContainerMetadata metadata = decode(consul.getKVValue(getPrefix() + "/" + containerId).getValue());
+            ContainerMetadata metadata = decode(consul.keyValueClient().getValueAsString(getPrefix() + "/" + containerId).get());
             containerIndex.add(metadata);
 
             return metadata;
@@ -123,13 +124,13 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         @Override
         public ContainerMetadata get(String nodeId, String containerId)
         {
-            return decode(consul.getKVValue(prefix + "/" + nodeId + "/" + containerId).getValue());
+            return decode(consul.keyValueClient().getValueAsString(prefix + "/" + nodeId + "/" + containerId).get());
         }
 
         @Override
         public List<ContainerMetadata> getAll()
         {
-            List<GetValue> values = consul.getKVValues(getPrefix()).getValue();
+            List<String> values = consul.keyValueClient().getValuesAsString(getPrefix());
 
             return values
                 .stream()
@@ -143,17 +144,17 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             metadata.clusterNode = getClusterNode();
             metadata.host = getClusterNode().getName();
             containerIndex.add(metadata);
-            consul.setKVValue(getPrefix() + "/" + metadata.containerId, gson.toJson(metadata));
+            consul.keyValueClient().putValue(getPrefix() + "/" + metadata.containerId, gson.toJson(metadata));
         }
 
         @Override
         public void set(List<ContainerMetadata> metadatas)
         {
-            List<String> containers = consul.getKVKeysOnly(getPrefix() + "/").getValue();
+            List<String> containers = consul.keyValueClient().getKeys(getPrefix());
             HashSet<String> addedContainers = new HashSet<>();
             for (ContainerMetadata metadata : metadatas) {
                 add(metadata);
-                addedContainers.add(metadata.containerId);
+                addedContainers.add(getPrefix() + "/" + metadata.containerId);
             }
             // delete orphaned containers
             if (containers.size() == 0) {
@@ -169,14 +170,14 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         public void delete(String containerId)
         {
             containerIndex.removeById(containerId);
-            consul.deleteKVValue(getPrefix() + "/" + containerId);
+            consul.keyValueClient().deleteKey(getPrefix() + "/" + containerId);
         }
 
         @Override
         public void delete(ContainerMetadata metadata)
         {
             containerIndex.remove(metadata);
-            consul.deleteKVValue(getPrefix() + "/" + metadata.containerId);
+            consul.keyValueClient().deleteKey(getPrefix() + "/" + metadata.containerId);
         }
 
         @Override
@@ -185,8 +186,8 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             if (!useRemoteServices) {
                 // get services from consul agent
                 Map<String, ContainerService> services = new HashMap<>();
-                Map<String, Service> value = consul.getAgentServices().getValue();
-                for (Map.Entry<String, Service> entry : value.entrySet()) {
+                Map<String, Service> agentServices = consul.agentClient().getServices();
+                for (Map.Entry<String, Service> entry : agentServices.entrySet()) {
                     Service service = entry.getValue();
                     // get container name from service name (HOST:CONTAINER_NAME:PORT)
                     // node1.mesos-test.local:weave:6783 -> weave
