@@ -66,10 +66,10 @@ public class DockerMetadataCollectorProviderTest
 
         DockerMetadataCollectorProvider collector = new DockerMetadataCollectorProvider(dockerClientFactory, "localhost");
         ContainerMetadata metadata = collector.getCollector(URI.create("docker://foo:2375")).get("fake_container");
-        assertEquals("123asfd", metadata.containerId);
-        assertEquals("1.2.3.4", metadata.ip);
-        assertEquals("test.1234-foo-bar", metadata.mesosTaskId);
-        assertEquals("/customers/1/foo", metadata.marathonAppId);
-        assertEquals("2015-01-12", metadata.marathonVersion);
+        assertEquals("123asfd", metadata.getContainerId());
+        assertEquals("1.2.3.4", metadata.getIp());
+        assertEquals("test.1234-foo-bar", metadata.getMesosTaskId());
+        assertEquals("/customers/1/foo", metadata.getMarathonAppId());
+        assertEquals("2015-01-12", metadata.getMarathonVersion());
     }
 }
