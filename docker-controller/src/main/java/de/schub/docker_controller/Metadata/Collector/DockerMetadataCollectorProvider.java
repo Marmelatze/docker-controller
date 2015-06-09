@@ -80,12 +80,13 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
                 throw new MetadataCollectorException("Unable to inpect container " + containerId, e);
             }
 
-            ContainerMetadata metadata = new ContainerMetadata();
-            metadata.containerId = container.id();
-            metadata.host = hostname;
-            metadata.ip = container.networkSettings().ipAddress();
-            // remove / at the beginning
-            metadata.name = container.name().substring(1);
+            ContainerMetadata.ContainerMetadataBuilder builder = ContainerMetadata.builder()
+                .setContainerId(container.id())
+                .setHost(hostname)
+                .setIp(container.networkSettings().ipAddress())
+                // remove / at the beginning
+                .setName(container.name().substring(1))
+                ;
 
             // loop through env variables
             for (String env : container.config().env()) {
@@ -94,18 +95,18 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
                 String value = parts[1];
                 switch (key) {
                     case "MESOS_TASK_ID":
-                        metadata.mesosTaskId = value;
+                        builder.setMesosTaskId(value);
                         break;
                     case "MARATHON_APP_ID":
-                        metadata.marathonAppId = value;
+                        builder.setMarathonAppId(value);
                         break;
                     case "MARATHON_APP_VERSION":
-                        metadata.marathonVersion = value;
+                        builder.setMarathonVersion(value);
                         break;
                 }
             }
 
-            return metadata;
+            return builder.build();
         }
 
         @Override

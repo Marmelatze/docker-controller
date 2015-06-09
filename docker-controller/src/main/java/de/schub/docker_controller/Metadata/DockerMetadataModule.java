@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
 import dagger.Provides;
-import de.schub.docker_controller.Metadata.Collector.DefaultMetadataCollectorFactory;
-import de.schub.docker_controller.Metadata.Collector.DockerMetadataCollectorProvider;
-import de.schub.docker_controller.Metadata.Collector.MetadataCollectorFactory;
-import de.schub.docker_controller.Metadata.Collector.MetadataCollectorProvider;
+import de.schub.docker_controller.Metadata.Collector.*;
 import de.schub.docker_controller.Metadata.Storage.ConsulMetadataStorageProvider;
 import de.schub.docker_controller.Metadata.Storage.DefaultMetadataStorageFactory;
 import de.schub.docker_controller.Metadata.Storage.MetadataStorageFactory;
@@ -54,12 +51,21 @@ public class DockerMetadataModule
         return new DockerMetadataCollectorProvider(dockerClientFactory, hostname);
     }
 
+    ConsulDockerMetadataCollectorProvider getConsulDockerMetadataCollectorProvider(
+        ConsulClientFactory consulClientFactory,
+        DockerMetadataCollectorProvider dockerMetadataCollectorProvider)
+    {
+        return new ConsulDockerMetadataCollectorProvider(consulClientFactory, dockerMetadataCollectorProvider);
+    }
+
     @Provides
     List<MetadataCollectorProvider> getMetdataCollectorProviders(
-        DockerMetadataCollectorProvider dockerMetadataCollectorProvider)
+        DockerMetadataCollectorProvider dockerMetadataCollectorProvider,
+        ConsulDockerMetadataCollectorProvider consulDockerMetadataCollectorProvider)
     {
         ArrayList<MetadataCollectorProvider> providers = new ArrayList<>();
         providers.add(dockerMetadataCollectorProvider);
+        providers.add(consulDockerMetadataCollectorProvider);
 
         return providers;
     }

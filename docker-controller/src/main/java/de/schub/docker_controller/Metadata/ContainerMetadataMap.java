@@ -29,13 +29,13 @@ public class ContainerMetadataMap
 
     private String getName(ContainerMetadata metadata)
     {
-        return getName(metadata.clusterNode, metadata.name);
+        return getName(metadata.getClusterNode(), metadata.getName());
     }
 
     public void add(ContainerMetadata metadata)
     {
-        this.idMap.put(metadata.containerId, metadata);
-        this.nameMap.put(getName(metadata), metadata.containerId);
+        this.idMap.put(metadata.getContainerId(), metadata);
+        this.nameMap.put(getName(metadata), metadata.getContainerId());
     }
 
     public ContainerMetadata getById(String id)
@@ -54,7 +54,7 @@ public class ContainerMetadataMap
 
     public void remove(ContainerMetadata metadata)
     {
-        this.idMap.remove(metadata.containerId);
+        this.idMap.remove(metadata.getContainerId());
         this.nameMap.remove(getName(metadata));
     }
 

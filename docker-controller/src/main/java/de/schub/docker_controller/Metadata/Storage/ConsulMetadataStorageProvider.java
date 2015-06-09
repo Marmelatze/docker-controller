@@ -6,6 +6,7 @@ import com.orbitz.consul.model.health.Service;
 import de.schub.docker_controller.Metadata.*;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -141,23 +142,28 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         @Override
         public void add(ContainerMetadata metadata)
         {
-            metadata.clusterNode = getClusterNode();
-            metadata.host = getClusterNode().getName();
+            if (null == metadata.getClusterNode()) {
+                metadata.setClusterNode(getClusterNode());
+            }
             containerIndex.add(metadata);
-            consul.keyValueClient().putValue(getPrefix() + "/" + metadata.containerId, gson.toJson(metadata));
+            consul.keyValueClient().putValue(getPrefix() + "/" + metadata.getContainerId(), gson.toJson(metadata));
         }
 
         @Override
         public void set(List<ContainerMetadata> metadatas)
         {
-            List<String> containers = consul.keyValueClient().getKeys(getPrefix());
+            List<String> containers = null;
+            try {
+                containers = consul.keyValueClient().getKeys(getPrefix());
+            } catch (NotFoundException ignored) {
+            }
             HashSet<String> addedContainers = new HashSet<>();
             for (ContainerMetadata metadata : metadatas) {
                 add(metadata);
-                addedContainers.add(getPrefix() + "/" + metadata.containerId);
+                addedContainers.add(getPrefix() + "/" + metadata.getContainerId());
             }
             // delete orphaned containers
-            if (containers.size() == 0) {
+            if (null == containers || containers.size() == 0) {
                 return;
             }
             containers
@@ -177,7 +183,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         public void delete(ContainerMetadata metadata)
         {
             containerIndex.remove(metadata);
-            consul.keyValueClient().deleteKey(getPrefix() + "/" + metadata.containerId);
+            consul.keyValueClient().deleteKey(getPrefix() + "/" + metadata.getContainerId());
         }
 
         @Override
@@ -206,7 +212,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
                         consul.agentClient().deregister(service.getId());
                         continue;
                     }
-                    services.put(metadata.containerId, new ContainerService());
+                    services.put(metadata.getContainerId(), new ContainerService());
                 }
 
                 return services;

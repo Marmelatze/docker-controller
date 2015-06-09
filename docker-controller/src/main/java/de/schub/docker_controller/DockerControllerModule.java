@@ -32,7 +32,8 @@ public class DockerControllerModule
     {
         return new Registry(
             metadataCollectorFactory.get(URI.create(parameters.metadataCollector)),
-            metadataStorageFactory.get(URI.create(parameters.metadataStorage))
+            metadataStorageFactory.get(URI.create(parameters.metadataStorage)),
+            parameters.interval
         );
     }
 }

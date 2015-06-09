@@ -61,18 +61,6 @@
     <orderEntry type="library" exported="" name="Gradle: com.google.dagger:dagger:2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.mockito:mockito-core:1.10.19" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.objenesis:objenesis:2.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.cxf:cxf-rt-rs-client:3.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.cxf:cxf-rt-transports-http-hc:3.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.cxf:cxf-rt-transports-http:3.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.cxf:cxf-core:3.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.cxf:cxf-rt-frontend-jaxrs:3.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.slf4j:slf4j-api:1.7.7" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.httpcomponents:httpcore-nio:4.3.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.httpcomponents:httpasyncclient:4.0.2" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.codehaus.woodstox:woodstox-core-asl:4.4.1" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.ws.xmlschema:xmlschema-core:2.1.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.apache.httpcomponents:httpcore:4.3.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.orbitz.consul:consul-client:0.9.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.5.3" level="project" />
@@ -84,5 +72,7 @@
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.5.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.5.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.google.code.gson:gson:2.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.slf4j:slf4j-api:1.7.6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.apache.httpcomponents:httpcore:4.3.2" level="project" />
   </component>
 </module>

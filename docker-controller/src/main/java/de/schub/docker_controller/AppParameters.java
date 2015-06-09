@@ -18,6 +18,9 @@ public class AppParameters
     @Parameter(names = {"-hostname"}, description = "Hostname to be reported")
     public String hostname;
 
+    @Parameter(names = {"-interval"}, description = "sync interval in Minutes")
+    public int interval = 5;
+
     @Parameter(names = "--help", help = true)
     public boolean help;
 

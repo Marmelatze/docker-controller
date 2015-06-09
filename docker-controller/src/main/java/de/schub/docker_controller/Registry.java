@@ -10,22 +10,41 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Registry
 {
-    Logger logger = LoggerFactory.getLogger(Registry.class);
-
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final MetadataCollector metadataCollector;
     private final MetadataStorage storage;
+    private final int interval;
+    Logger logger = LoggerFactory.getLogger(Registry.class);
 
     @Inject
-    public Registry(MetadataCollector metadataCollector, MetadataStorage storage)
+    public Registry(MetadataCollector metadataCollector, MetadataStorage storage, int interval)
     {
         this.metadataCollector = metadataCollector;
         this.storage = storage;
+        this.interval = interval;
     }
 
     public void sync()
+    {
+        scheduler.scheduleAtFixedRate(
+            new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    doSync();
+                }
+            }, 0, interval, TimeUnit.MINUTES
+        );
+    }
+
+    private void doSync()
     {
         logger.info("Updating container metadata");
         try {
@@ -37,7 +56,7 @@ public class Registry
         } catch (MetadataCollectorException e) {
             logger.error("Failed to get metadata", e);
         }
-
+        logger.info("finished");
 
     }
     /*

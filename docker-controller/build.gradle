@@ -3,11 +3,13 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
 }
 
 plugins {
     id "com.ewerk.gradle.plugins.dagger" version "1.0.0"
-    id "de.gesellix.docker" version "2015-05-25T18-47-02"
 }
 
 
@@ -17,7 +19,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
-//apply plugin: 'docker'
+apply plugin: 'docker'
 
 
 repositories {
@@ -32,8 +34,6 @@ run {
         args project.args.split('\\s+')
     }
 }
-/*
-
 docker {
     baseImage "develar/java:8u45"
     maintainer 'Florian Pfitzer "florian@pfitzer.me"'
@@ -42,7 +42,7 @@ docker {
 distDocker {
     runCommand "apk --update add bash"
 }
-*/
+
 task fatJar(type: Jar) {
     manifest {
         attributes "Main-Class": "$mainClassName"

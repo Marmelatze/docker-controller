@@ -32,7 +32,5 @@ public class Main
             .dockerControllerModule(new DockerControllerModule(parameters))
             .build();
         dockerController.getRegistry().sync();
-
-        System.exit(0);
     }
 }
