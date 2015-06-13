@@ -32,5 +32,9 @@ public class Main
             .dockerControllerModule(new DockerControllerModule(parameters))
             .build();
         dockerController.getRegistry().sync();
+
+        if (null != parameters.cadvisor && !parameters.cadvisor.isEmpty()) {
+            dockerController.getCadvisorProxy().run();
+        }
     }
 }

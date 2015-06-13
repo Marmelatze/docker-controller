@@ -21,6 +21,12 @@ public class AppParameters
     @Parameter(names = {"-interval"}, description = "sync interval in Minutes")
     public int interval = 5;
 
+    @Parameter(names = {"-cadvisor"}, description = "URL of cAdvisor")
+    public String cadvisor = "http://localhost:8080";
+
+    @Parameter(names = {"-proxy_port"}, description = "port for cadvisor proxy")
+    public int cadvisorProxyPort = 4041;
+
     @Parameter(names = "--help", help = true)
     public boolean help;
 

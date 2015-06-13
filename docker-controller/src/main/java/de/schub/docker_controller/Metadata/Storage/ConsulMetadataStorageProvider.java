@@ -169,7 +169,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             containers
                 .stream()
                 .filter(containerId -> !addedContainers.contains(containerId))
-                .forEach(this::delete)
+                .forEach((containerId1) -> delete(containerId1.replaceFirst(getPrefix(), "")))
             ;
         }
 

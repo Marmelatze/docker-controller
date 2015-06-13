@@ -34,13 +34,15 @@ run {
         args project.args.split('\\s+')
     }
 }
+
 docker {
     baseImage "develar/java:8u45"
     maintainer 'Florian Pfitzer "florian@pfitzer.me"'
 }
 
 distDocker {
-    runCommand "apk --update add bash"
+    runCommand "apk --update add bash && rm -rf /tmp/* /var/cache/apk/*"
+    exposePort 4041
 }
 
 task fatJar(type: Jar) {

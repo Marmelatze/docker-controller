@@ -4,6 +4,7 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
+import com.spotify.docker.client.messages.ImageInfo;
 import com.spotify.docker.client.messages.Info;
 import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.DockerClientFactory;
@@ -16,7 +17,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DockerMetadataCollectorProvider implements MetadataCollectorProvider
@@ -73,7 +76,8 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         public ContainerMetadata get(String containerId) throws MetadataCollectorException
         {
             connect();
-            ContainerInfo container;
+            ContainerInfo container = null;
+            ImageInfo image;
             try {
                 container = dockerClient.inspectContainer(containerId);
             } catch (DockerException | InterruptedException e) {
@@ -83,6 +87,7 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
             ContainerMetadata.ContainerMetadataBuilder builder = ContainerMetadata.builder()
                 .setContainerId(container.id())
                 .setHost(hostname)
+                .setImage(container.config().image())
                 .setIp(container.networkSettings().ipAddress())
                 // remove / at the beginning
                 .setName(container.name().substring(1))
@@ -112,6 +117,12 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         @Override
         public List<ContainerMetadata> getAll() throws MetadataCollectorException
         {
+            return new ArrayList<>(getMap().values());
+        }
+
+        @Override
+        public Map<String, ContainerMetadata> getMap() throws MetadataCollectorException
+        {
             connect();
             try {
                 List<Container> containers = dockerClient.listContainers();
@@ -126,11 +137,13 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
                             }
                         }
                     )
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(
+                            ContainerMetadata::getContainerId,
+                            metadata -> metadata
+                    ));
             } catch (DockerException | InterruptedException e) {
                 throw new MetadataCollectorException("Failed to retrieve container list", e);
-            }
-        }
+            }        }
 
         protected void connect() throws MetadataCollectorException
         {

@@ -1,6 +1,7 @@
 package de.schub.marathon_scaler;
 
-import de.schub.docker_controller.Metadata.ContainerMetadata;
+import de.schub.docker_controller.Metadata.DaggerDockerMetadataComponent;
+import de.schub.docker_controller.Metadata.DockerMetadataModule;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
 import mesosphere.marathon.client.model.v2.App;
@@ -24,9 +25,18 @@ public class Main
         Marathon marathon = MarathonClient.getInstance(endpoint);
         List<App> apps = marathon.getApps().getApps();
 
+        MarathonScaler marathonScaler = DaggerMarathonScaler.builder()
+            .dockerMetadataComponent(
+                DaggerDockerMetadataComponent
+                    .builder()
+                    .dockerMetadataModule(new DockerMetadataModule("asdf"))
+                    .build()
+            )
+            .build();
 
         for (App app : apps) {
             Collection<Task> tasks = marathon.getAppTasks(app.getId()).getTasks();
+            System.out.println(tasks);
         }
     }
 }

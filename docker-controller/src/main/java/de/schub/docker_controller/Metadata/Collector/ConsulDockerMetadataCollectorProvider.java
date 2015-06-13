@@ -121,5 +121,11 @@ public class ConsulDockerMetadataCollectorProvider implements MetadataCollectorP
 
             return containers;
         }
+
+        @Override
+        public Map<String, ContainerMetadata> getMap() throws MetadataCollectorException
+        {
+            return null;
+        }
     }
 }

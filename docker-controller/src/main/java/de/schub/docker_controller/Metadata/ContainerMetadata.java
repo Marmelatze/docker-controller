@@ -16,6 +16,9 @@ public class ContainerMetadata
     private ClusterNode clusterNode;
 
     @Expose
+    private String image;
+
+    @Expose
     private String ip;
 
     @Expose
@@ -33,6 +36,7 @@ public class ContainerMetadata
         this.name = builder.name;
         this.host = builder.host;
         this.clusterNode = builder.clusterNode;
+        this.image = builder.image;
         this.ip = builder.ip;
         this.mesosTaskId = builder.mesosTaskId;
         this.marathonAppId = builder.marathonAppId;
@@ -68,6 +72,11 @@ public class ContainerMetadata
     {
         this.clusterNode = clusterNode;
         this.host = clusterNode.getName();
+    }
+
+    public String getImage()
+    {
+        return image;
     }
 
     public String getIp()
@@ -110,6 +119,7 @@ public class ContainerMetadata
         private String name;
         private String host;
         private ClusterNode clusterNode;
+        private String image;
         private String ip;
         private String mesosTaskId;
         private String marathonAppId;
@@ -142,6 +152,12 @@ public class ContainerMetadata
         public ContainerMetadataBuilder setIp(String ip)
         {
             this.ip = ip;
+            return this;
+        }
+
+        public ContainerMetadataBuilder setImage(String image)
+        {
+            this.image = image;
             return this;
         }
 
