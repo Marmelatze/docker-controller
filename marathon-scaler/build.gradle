@@ -23,8 +23,10 @@ apply plugin: 'application'
 mainClassName = "de.schub.marathon_scaler.Main"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
+
 }
 
 dependencies {
@@ -32,5 +34,7 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.+"
 
     compile project(':docker-controller')
-    compile 'com.github.mohitsoni:marathon-client:0.4.2'
+    compile project(':consul-client')
+    compile 'com.github.mohitsoni:marathon-client:0.4.3-SNAPSHOT'
+    //compile files('../../marathon-client')
 }

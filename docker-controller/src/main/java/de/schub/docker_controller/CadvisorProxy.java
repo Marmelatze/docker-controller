@@ -176,14 +176,4 @@ public class CadvisorProxy
             return resultString.toString();
         }
     }
-
-    class LabelList
-    {
-        HashMap<String, String> labels = new HashMap<>();
-
-        public LabelList()
-        {
-
-        }
-    }
 }

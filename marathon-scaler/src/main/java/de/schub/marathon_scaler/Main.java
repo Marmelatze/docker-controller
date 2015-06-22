@@ -4,11 +4,6 @@ import de.schub.docker_controller.Metadata.DaggerDockerMetadataComponent;
 import de.schub.docker_controller.Metadata.DockerMetadataModule;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
-import mesosphere.marathon.client.model.v2.App;
-import mesosphere.marathon.client.model.v2.Task;
-
-import java.util.Collection;
-import java.util.List;
 
 public class Main
 {
@@ -21,22 +16,19 @@ public class Main
 
     public static void main(String[] args)
     {
-        String endpoint = "http://10.90.43.79:8080";
+        String endpoint = "http://node01.mesos-cluster.local:8080";
         Marathon marathon = MarathonClient.getInstance(endpoint);
-        List<App> apps = marathon.getApps().getApps();
 
         MarathonScaler marathonScaler = DaggerMarathonScaler.builder()
             .dockerMetadataComponent(
                 DaggerDockerMetadataComponent
                     .builder()
-                    .dockerMetadataModule(new DockerMetadataModule("asdf"))
+                    .dockerMetadataModule(new DockerMetadataModule("adsf"))
                     .build()
             )
             .build();
 
-        for (App app : apps) {
-            Collection<Task> tasks = marathon.getAppTasks(app.getId()).getTasks();
-            System.out.println(tasks);
-        }
+        marathonScaler.getMarathonMonitor().run();
+        marathonScaler.getCustomerService().run();
     }
 }

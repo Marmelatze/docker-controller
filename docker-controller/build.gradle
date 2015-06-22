@@ -61,7 +61,9 @@ dependencies {
 
     compile "com.google.code.gson:gson:2.3"
 
-    compile "com.orbitz.consul:consul-client:0.9.3"
+    //compile "com.orbitz.consul:consul-client:0.9.3"
+    compile project(':consul-client')
+
     //compile 'org.apache.cxf:cxf-rt-rs-client:3.0.3'
     //compile 'org.apache.cxf:cxf-rt-transports-http-hc:3.0.3'
 

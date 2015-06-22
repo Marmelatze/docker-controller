@@ -1,0 +1,3 @@
+[submodule "consul-client"]
+	path = consul-client
+	url = git@github.com:OrbitzWorldwide/consul-client.git
