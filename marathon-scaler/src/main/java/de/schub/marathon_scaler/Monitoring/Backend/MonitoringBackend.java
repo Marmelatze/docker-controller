@@ -4,5 +4,11 @@ import de.schub.marathon_scaler.AppStatistics;
 
 public interface MonitoringBackend
 {
-    AppStatistics getStatistics(String appId);
+    /**
+     *
+     * @param appId id of app, to get statistics for
+     * @param range time range for calculation (in seconds)
+     * @return
+     */
+    AppStatistics getStatistics(String appId, double range);
 }

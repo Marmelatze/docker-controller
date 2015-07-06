@@ -26,12 +26,13 @@ public class CustomerService
     {
         try {
             // always update. marathon will handle new groups and changes to existing
+            Group parentGroup = marathon.getGroup("customer");
             for (Map.Entry<Integer, Customer> entry : customers.entrySet()) {
-                Group group = template.create(entry.getValue());
+                Group oldGroup = marathon.getGroup("/customer/" + entry.getValue().getId());
+                Group group = template.create(oldGroup, entry.getValue());
                 marathon.updateGroup(group.getId(), group, true);
             }
             // remove old customers
-            Group parentGroup = marathon.getGroup("customer");
             for (Group customerGroup : parentGroup.getGroups()) {
                 int customerId = Integer.valueOf(customerGroup.getId().replaceFirst("/customer/", ""));
                 if (!customers.containsKey(customerId)) {

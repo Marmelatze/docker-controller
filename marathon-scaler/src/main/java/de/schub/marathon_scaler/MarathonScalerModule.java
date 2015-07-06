@@ -7,16 +7,30 @@ import dagger.Provides;
 import de.schub.docker_controller.Metadata.ConsulClientFactory;
 import de.schub.marathon_scaler.Customer.CustomerService;
 import de.schub.marathon_scaler.Customer.CustomerStorage;
+import de.schub.marathon_scaler.Monitoring.Backend.MonitoringBackend;
+import de.schub.marathon_scaler.Monitoring.Backend.PrometheusBackend;
 import de.schub.marathon_scaler.Monitoring.MarathonMonitor;
+import de.schub.marathon_scaler.Monitoring.Strategy.Horizontal;
+import de.schub.marathon_scaler.Monitoring.Strategy.ScalingStrategy;
+import de.schub.marathon_scaler.Monitoring.Strategy.StrategyFactory;
+import de.schub.marathon_scaler.Monitoring.Strategy.Vertical;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
 
 import javax.inject.Singleton;
 import java.net.URI;
+import java.util.HashMap;
 
 @Module
 public class MarathonScalerModule
 {
+    private final AppParameters parameters;
+
+    public MarathonScalerModule(AppParameters parameters)
+    {
+        this.parameters = parameters;
+    }
+
     @Provides
     ConsulClientFactory getConsulClientFactory()
     {
@@ -26,13 +40,13 @@ public class MarathonScalerModule
     @Provides
     CustomerStorage getCustomerStorage(ConsulClientFactory consulClientFactory, Gson gson)
     {
-        return new CustomerStorage(consulClientFactory.get(URI.create("http://node01.mesos-cluster.local:8500")), gson);
+        return new CustomerStorage(consulClientFactory.get(URI.create(parameters.consul)), gson);
     }
 
     @Provides
     Marathon getMarathon()
     {
-        return MarathonClient.getInstance("http://node01.mesos-cluster.local:8080");
+        return MarathonClient.getInstance(parameters.marathonURI);
     }
 
     @Provides
@@ -42,9 +56,46 @@ public class MarathonScalerModule
     }
 
     @Provides
-    MarathonMonitor getMarathonMonitor(Marathon marathon)
+    MonitoringBackend getMonitoringBackend()
     {
-        return new MarathonMonitor(marathon);
+        return new PrometheusBackend(parameters.monitoringBackend);
+    }
+
+
+    @Provides
+    Vertical getVerticalScalingStrategy()
+    {
+        return new Vertical();
+    }
+
+    Horizontal getHorizontalScalingStrategy()
+    {
+        return new Horizontal();
+    }
+
+    @Provides
+    HashMap<String, ScalingStrategy> getStringScalingStrategyHashMap(Vertical vertical, Horizontal horizontal)
+    {
+        HashMap<String, ScalingStrategy> strategies = new HashMap<>();
+        strategies.put(Vertical.NAME, vertical);
+        strategies.put(Horizontal.NAME, horizontal);
+
+        return strategies;
+    }
+
+    @Provides
+    StrategyFactory getStrategyFactory(HashMap<String, ScalingStrategy> strategies)
+    {
+        return new StrategyFactory(strategies);
+    }
+
+    @Provides
+    MarathonMonitor getMarathonMonitor(
+        Marathon marathon,
+        MonitoringBackend monitoringBackend,
+        StrategyFactory strategyFactory)
+    {
+        return new MarathonMonitor(marathon, monitoringBackend, strategyFactory);
     }
 
     @Provides

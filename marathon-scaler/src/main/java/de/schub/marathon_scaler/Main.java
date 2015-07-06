@@ -1,9 +1,8 @@
 package de.schub.marathon_scaler;
 
+import com.beust.jcommander.JCommander;
 import de.schub.docker_controller.Metadata.DaggerDockerMetadataComponent;
 import de.schub.docker_controller.Metadata.DockerMetadataModule;
-import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.MarathonClient;
 
 public class Main
 {
@@ -16,8 +15,12 @@ public class Main
 
     public static void main(String[] args)
     {
-        String endpoint = "http://node01.mesos-cluster.local:8080";
-        Marathon marathon = MarathonClient.getInstance(endpoint);
+        AppParameters parameters = new AppParameters();
+        JCommander jCommander = new JCommander(parameters, args);
+        if (parameters.help) {
+            jCommander.usage();
+            System.exit(1);
+        }
 
         MarathonScaler marathonScaler = DaggerMarathonScaler.builder()
             .dockerMetadataComponent(
@@ -26,6 +29,7 @@ public class Main
                     .dockerMetadataModule(new DockerMetadataModule("adsf"))
                     .build()
             )
+            .marathonScalerModule(new MarathonScalerModule(parameters))
             .build();
 
         marathonScaler.getMarathonMonitor().run();

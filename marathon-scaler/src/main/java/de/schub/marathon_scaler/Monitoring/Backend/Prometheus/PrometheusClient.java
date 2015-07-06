@@ -35,12 +35,19 @@ public class PrometheusClient
         gson = builder.create();
     }
 
+    /**
+     * Query prometheus and return the result
+     * @param expression
+     * @return
+     * @throws PrometheusException
+     */
     public PrometheusResponse query(String expression) throws PrometheusException
     {
         WebTarget queryTarget = target.queryParam(
             "expr",
             UriComponent.encode(expression, UriComponent.Type.QUERY_PARAM_SPACE_ENCODED)
         );
+        logger.debug(expression);
         String json = queryTarget.request().get(String.class);
 
         PrometheusResponse response = gson.fromJson(json, PrometheusResponse.class);
@@ -51,6 +58,11 @@ public class PrometheusClient
         return response;
     }
 
+    /**
+     * Like query, but gets a single float value from the first result, when the query results in a vector
+     * @param expression
+     * @return
+     */
     public Optional<Float> querySingleValue(String expression)
     {
         try {
@@ -66,6 +78,9 @@ public class PrometheusClient
         return Optional.empty();
     }
 
+    /**
+     * deserializer for GSON to decode different prometheus response types ("type" field).
+     */
     private class PrometheusResponseAdapter implements JsonDeserializer<PrometheusResponse>
     {
         @Override

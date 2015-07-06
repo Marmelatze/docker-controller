@@ -23,6 +23,11 @@ public class AppStatistics
         return memory;
     }
 
+    public float getMemoryInMegabytes()
+    {
+        return memory.orElse(0F) / 1024 / 1024;
+    }
+
     public void setMemory(Optional<Float> memory)
     {
         this.memory = memory;
