@@ -54,6 +54,7 @@ public class DockerMetadataCollectorProviderTest
 
         ContainerInfo containerInfo = mock(ContainerInfo.class, RETURNS_DEEP_STUBS);
         when(containerInfo.id()).thenReturn("123asfd");
+        when(containerInfo.name()).thenReturn("/test");
         when(containerInfo.networkSettings().ipAddress()).thenReturn("1.2.3.4");
         when(containerInfo.config().env()).thenReturn(env);
 

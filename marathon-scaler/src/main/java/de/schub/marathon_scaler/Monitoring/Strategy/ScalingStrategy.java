@@ -16,5 +16,5 @@ public interface ScalingStrategy
     /**
      * @return time in seconds for statistics interval. e.g. 60 to calculate the stats from the last minute
      */
-    public double getStatisticsInterval();
+    public long getStatisticsInterval();
 }

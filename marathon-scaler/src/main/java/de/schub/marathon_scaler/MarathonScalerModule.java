@@ -68,6 +68,7 @@ public class MarathonScalerModule
         return new Vertical();
     }
 
+    @Provides
     Horizontal getHorizontalScalingStrategy()
     {
         return new Horizontal();

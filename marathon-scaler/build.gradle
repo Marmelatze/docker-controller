@@ -38,3 +38,13 @@ dependencies {
     compile 'com.github.mohitsoni:marathon-client:0.4.3-SNAPSHOT'
     //compile files('../../marathon-client')
 }
+
+run {
+    if(project.hasProperty('args')){
+        args project.args.split('\\s+')
+    }
+}
+
+test {
+    test.systemProperties = System.properties
+}

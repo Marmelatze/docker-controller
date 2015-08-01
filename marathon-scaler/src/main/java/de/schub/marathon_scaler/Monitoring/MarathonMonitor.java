@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MarathonMonitor
 {
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public static final String LABEL_SCALING_STRATEGY = "scaling";
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Marathon marathon;
     private final MonitoringBackend monitoringBackend;
     private final StrategyFactory strategyFactory;
@@ -47,8 +47,14 @@ public class MarathonMonitor
 
     private void doRun()
     {
-        List<App> apps = marathon.getApps().getApps();
-        apps.forEach(this::checkApp);
+        try {
+            List<App> apps = marathon.getApps().getApps();
+            for (App app : apps) {
+                checkApp(app);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to scale apps", e);
+        }
 
         try {
             Thread.sleep(1000 * 10);
@@ -63,9 +69,7 @@ public class MarathonMonitor
             return;
         }
         String strategy = app.getLabels().get(LABEL_SCALING_STRATEGY);
-        System.out.println(app.getId());
-        AppStatistics statistics = monitoringBackend.getStatistics(app.getId());
-        System.out.println(statistics);
+        logger.info("watching app {} (strategy {})", app.getId(), strategy);
 
         ScalingStrategy scalingStrategy;
         try {
@@ -78,16 +82,24 @@ public class MarathonMonitor
 
             return;
         }
+        AppStatistics statistics = monitoringBackend.getStatistics(
+            app.getId(),
+            scalingStrategy.getStatisticsInterval()
+        );
 
-        scalingStrategy.scale(app, statistics);
-
-
+        if (statistics.getCpu().isPresent()) {
+            logger.info("CPU usage {}%", Math.round(statistics.getCpu().get() * 100 * 100) / 100);
+        }
         if (statistics.getMemory().isPresent()) {
-            System.out.println("size in mb " + statistics.getMemory().get() / 1024 / 1024);
+            logger.info("Memory usage {}MB", statistics.getMemoryInMegabytes());
         }
         if (statistics.getDiskUsage().isPresent()) {
-            System.out.println("disk usage in mb " + statistics.getDiskUsage().get() / 1024 / 1024);
+            logger.info("Disk usage {}MB", statistics.getDiskUsage().get() / 1024 / 1024);
         }
+
+        scalingStrategy.scale(app, statistics);
+        marathon.updateApp(app.getId(), app);
+
 
     }
 

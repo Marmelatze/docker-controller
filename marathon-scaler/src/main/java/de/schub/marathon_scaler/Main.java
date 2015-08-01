@@ -21,12 +21,13 @@ public class Main
             jCommander.usage();
             System.exit(1);
         }
+        System.out.println(parameters);
 
         MarathonScaler marathonScaler = DaggerMarathonScaler.builder()
             .dockerMetadataComponent(
                 DaggerDockerMetadataComponent
                     .builder()
-                    .dockerMetadataModule(new DockerMetadataModule("adsf"))
+                    .dockerMetadataModule(new DockerMetadataModule(""))
                     .build()
             )
             .marathonScalerModule(new MarathonScalerModule(parameters))

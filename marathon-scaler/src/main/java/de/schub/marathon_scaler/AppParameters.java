@@ -1,7 +1,9 @@
 package de.schub.marathon_scaler;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 
+@Parameters(separators = "=")
 public class AppParameters
 {
     @Parameter(names = {"-monitoring"}, description = "Monitoring Backend")
@@ -15,4 +17,14 @@ public class AppParameters
 
     @Parameter(names = "--help", help = true)
     public boolean help;
+
+    @Override
+    public String toString()
+    {
+        return "AppParameters{" +
+               "consul='" + consul + '\'' +
+               ", marathonURI='" + marathonURI + '\'' +
+               ", monitoringBackend='" + monitoringBackend + '\'' +
+               '}';
+    }
 }

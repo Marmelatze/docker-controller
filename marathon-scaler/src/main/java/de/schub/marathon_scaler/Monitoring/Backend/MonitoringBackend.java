@@ -10,5 +10,5 @@ public interface MonitoringBackend
      * @param range time range for calculation (in seconds)
      * @return
      */
-    AppStatistics getStatistics(String appId, double range);
+    AppStatistics getStatistics(String appId, long range);
 }

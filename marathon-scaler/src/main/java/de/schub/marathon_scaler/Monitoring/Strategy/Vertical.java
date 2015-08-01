@@ -19,7 +19,7 @@ public class Vertical implements ScalingStrategy
         if (statistics.getCpu().orElse(0F) > 0.9) {
             app.setCpus(app.getCpus() * 1.5);
             logger.info(
-                "scaling app %s to %f cpus due to cpu usage (%.2f)",
+                "scaling app {} to {} cpus due to cpu usage ({})",
                 app.getId(),
                 app.getCpus(),
                 statistics.getCpu().get() * 100
@@ -31,19 +31,17 @@ public class Vertical implements ScalingStrategy
             Double oldMem = app.getMem();
             app.setMem(oldMem * 1.5);
             logger.info(
-                "scaling app %s to %.2f Memory due to memory usage (%.2f MB/$.2f MB)",
+                "scaling app {} to {} Memory due to memory usage ({} MB/{} MB)",
                 app.getId(),
                 app.getMem(),
                 statistics.getMemoryInMegabytes(),
                 oldMem
             );
         }
-
-        //if (statistics.getDiskUsage().orElse(0F > app.get))
     }
 
     @Override
-    public double getStatisticsInterval()
+    public long getStatisticsInterval()
     {
         // last 10 minutes
         return 60 * 10;

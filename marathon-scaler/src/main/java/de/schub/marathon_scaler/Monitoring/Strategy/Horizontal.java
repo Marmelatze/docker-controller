@@ -39,7 +39,7 @@ public class Horizontal implements ScalingStrategy
             if (cpuAverage > 0.9) {
                 app.setInstances(app.getInstances() + 1);
                 logger.info(
-                    "scaling app %s up to %d instances due to cpu usage (%.2f)",
+                    "scaling app '{}' up to {} instances due to cpu usage ({}%)",
                     app.getId(),
                     app.getInstances(),
                     cpuAverage * 100
@@ -51,7 +51,7 @@ public class Horizontal implements ScalingStrategy
             if (memoryAverage > app.getMem() * 0.9) {
                 app.setInstances(app.getInstances() + 1);
                 logger.info(
-                    "scaling app %s up to %d instances due to memory usage (%.2f MB/$.2f MB)",
+                    "scaling app '{}' up to {} instances due to memory usage ({} MB/{} MB)",
                     app.getId(),
                     app.getInstances(),
                     memoryAverage,
@@ -66,35 +66,23 @@ public class Horizontal implements ScalingStrategy
         // scaling down
         if (app.getInstances() > minInstances) {
             // check for presence to avoid scaling down, when no value exists
-            if (statistics.getCpu().isPresent() && cpuAverage < 10) {
+            if (statistics.getCpu().isPresent() && cpuAverage < 0.1
+                && statistics.getMemory().isPresent() && memoryAverage < app.getMem() * 0.5) {
                 app.setInstances(app.getInstances() - 1);
                 logger.info(
-                    "scaling app %s down to %d instances due to cpu usage (%.2f)",
+                    "scaling app '{}' down to {} instances due to low resource usage (CPU {}%, Memory: {}/{} MB)",
                     app.getId(),
                     app.getInstances(),
-                    cpuAverage * 100
-                );
-
-                return;
-            }
-
-            if (statistics.getMemory().isPresent() && memoryAverage < app.getMem() * 0.1) {
-                app.setInstances(app.getInstances() + 1);
-                logger.info(
-                    "scaling app %s down to %d instances due to memory usage (%.2f MB/$.2f MB)",
-                    app.getId(),
-                    app.getInstances(),
+                    cpuAverage * 100,
                     memoryAverage,
                     app.getMem()
                 );
-
-                return;
             }
         }
     }
 
     @Override
-    public double getStatisticsInterval()
+    public long getStatisticsInterval()
     {
         return 60;
     }

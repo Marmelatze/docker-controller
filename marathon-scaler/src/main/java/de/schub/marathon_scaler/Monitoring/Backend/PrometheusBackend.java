@@ -21,7 +21,7 @@ public class PrometheusBackend implements MonitoringBackend
     }
 
     @Override
-    public AppStatistics getStatistics(String appId, double range)
+    public AppStatistics getStatistics(String appId, long range)
     {
         AppStatistics stats = new AppStatistics();
         stats.setCpu(getCPUStats(client, appId, range));
@@ -31,19 +31,19 @@ public class PrometheusBackend implements MonitoringBackend
         return stats;
     }
 
-    private Optional<Float> getCPUStats(PrometheusClient client, String appId, double range)
+    private Optional<Float> getCPUStats(PrometheusClient client, String appId, long range)
     {
-        String query = "sum(rate(container_cpu_usage_seconds_total{marathon_app_id=\"%s\"}[%ds])) by (marathon_app) * 100";
+        String query = "sum(rate(container_cpu_usage_seconds_total{marathon_app_id=\"%s\"}[%ds])) by (marathon_app)";
         return client.querySingleValue(String.format(query, appId, range));
     }
 
-    private Optional<Float> getMemoryStats(PrometheusClient client, String appId, double range)
+    private Optional<Float> getMemoryStats(PrometheusClient client, String appId, long range)
     {
         String query = "avg_over_time(container_memory_usage_bytes{marathon_app_id=\"%s\"}[%ds])";
         return client.querySingleValue(String.format(query, appId, range));
     }
 
-    private Optional<Float> getDiskUsage(PrometheusClient client, String appId, double range)
+    private Optional<Float> getDiskUsage(PrometheusClient client, String appId, long range)
     {
         String query = "avg_over_time(container_fs_usage_bytes{marathon_app_id=\"%s\"}[%ds])";
         return client.querySingleValue(String.format(query, appId, range));
