@@ -26,6 +26,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
+    maven { url "https://jitpack.io" }
 
 }
 
@@ -35,8 +36,7 @@ dependencies {
 
     compile project(':docker-controller')
     compile project(':consul-client')
-    compile 'com.github.mohitsoni:marathon-client:0.4.3-SNAPSHOT'
-    //compile files('../../marathon-client')
+    compile 'com.github.marmelatze:marathon-client:marathon-client-0.4.3'
 }
 
 run {
