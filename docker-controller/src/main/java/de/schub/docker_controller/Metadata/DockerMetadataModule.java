@@ -58,21 +58,13 @@ public class DockerMetadataModule
         return new ConsulDockerMetadataCollectorProvider(consulClientFactory, dockerMetadataCollectorProvider);
     }
 
-    ConsulMetadataCollectorProvider getConsulMetadataCollectorProvider(
-        ConsulClientFactory consulClientFactory)
-    {
-        return new ConsulMetadataCollectorProvider(consulClientFactory);
-    }
-
     @Provides
     List<MetadataCollectorProvider> getMetdataCollectorProviders(
         DockerMetadataCollectorProvider dockerMetadataCollectorProvider,
-        ConsulMetadataCollectorProvider consulMetadataCollectorProvider,
         ConsulDockerMetadataCollectorProvider consulDockerMetadataCollectorProvider)
     {
         ArrayList<MetadataCollectorProvider> providers = new ArrayList<>();
         providers.add(dockerMetadataCollectorProvider);
-        providers.add(consulMetadataCollectorProvider);
         providers.add(consulDockerMetadataCollectorProvider);
 
         return providers;

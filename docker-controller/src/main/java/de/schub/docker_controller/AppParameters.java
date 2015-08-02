@@ -10,10 +10,10 @@ import java.net.UnknownHostException;
 public class AppParameters
 {
     @Parameter(names = {"-collector"}, description = "Metadata Collector")
-    public String metadataCollector = "docker://192.168.178.55:2375";
+    public String metadataCollector = "docker://127.0.0.1:2375";
 
     @Parameter(names = {"-storage"}, description = "Metadata Storage")
-    public String metadataStorage = "consul://192.168.178.55:8500";
+    public String metadataStorage = "consul://127.0.0.1:8500";
 
     @Parameter(names = {"-hostname"}, description = "Hostname to be reported")
     public String hostname;
@@ -22,7 +22,7 @@ public class AppParameters
     public int interval = 5;
 
     @Parameter(names = {"-cadvisor"}, description = "URL of cAdvisor")
-    public String cadvisor = "http://localhost:8080";
+    public String cadvisor = "http://127.0.0.1:8080";
 
     @Parameter(names = {"-proxy_port"}, description = "port for cadvisor proxy")
     public int cadvisorProxyPort = 4041;

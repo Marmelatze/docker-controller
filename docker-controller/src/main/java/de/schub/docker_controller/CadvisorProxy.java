@@ -24,6 +24,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Adding more labels to metrics exported by cadvisor to prometheus. No longer needed as it was integrated to cadvisor
+ * in PR #780: https://github.com/google/cadvisor/pull/780
+ */
+@Deprecated
 public class CadvisorProxy
 {
     private final int port;

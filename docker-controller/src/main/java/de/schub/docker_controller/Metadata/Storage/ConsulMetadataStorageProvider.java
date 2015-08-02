@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Store collected metadata to consul key value storage
+ */
 public class ConsulMetadataStorageProvider implements MetadataStorageProvider
 {
     private final ConsulClientFactory consulClientFactory;
@@ -59,12 +62,17 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         private ContainerMetadataMap containerIndex = new ContainerMetadataMap();
 
         /**
-         *
+         * use services from remote consul nodes
          */
         private final boolean useRemoteServices;
 
         private boolean connected = false;
 
+        /**
+         * @param consul            Consul-client
+         * @param prefix            prefix for the key-value storage (Default /container)
+         * @param useRemoteServices use services from remote consul nodes
+         */
         public ConsulMetadataStorage(Consul consul, String prefix, boolean useRemoteServices)
         {
             this.consul = consul;
@@ -87,6 +95,9 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             return node;
         }
 
+        /**
+         * connect to consul, gets the nodename
+         */
         private void connect()
         {
             if (connected) {
@@ -187,12 +198,17 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         }
 
         @Override
+        /**
+         * @TODO: This function is more of a hack. It deletes services added by registrator, when the container doesn't exist anymore.
+         * Luckily there is a PR to fix this in registrator.
+         * Until the PR is merged this function need to exist (https://github.com/gliderlabs/registrator/pull/202),
+         * otherwise you will end with plenty of non existing services.
+         */
         public Map<String, ContainerService> getServices()
         {
             // get services from consul agent
             if (!useRemoteServices) {
-
-                // init if index is empty
+                // init if container index is empty
                 if (containerIndex.size() == 0) {
                     this.getAll();
                 }
