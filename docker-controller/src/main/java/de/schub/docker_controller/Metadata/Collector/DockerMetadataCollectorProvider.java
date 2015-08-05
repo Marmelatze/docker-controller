@@ -4,7 +4,6 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerInfo;
-import com.spotify.docker.client.messages.ImageInfo;
 import com.spotify.docker.client.messages.Info;
 import de.schub.docker_controller.Metadata.ContainerMetadata;
 import de.schub.docker_controller.Metadata.DockerClientFactory;
@@ -22,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Get Metadata from a docker daemon.
+ */
 public class DockerMetadataCollectorProvider implements MetadataCollectorProvider
 {
     protected final DockerClientFactory dockerClientFactory;
@@ -41,6 +43,20 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         return new DockerMetadataCollector(dockerClientFactory.get(parseURI(endpoint)));
     }
 
+    @Override
+    public boolean supports(URI endpoint)
+    {
+        return endpoint.getScheme().equals("docker");
+    }
+
+    /**
+     * change URI, so it can be used with the docker client.
+     * docker://host:port -> http://host:port
+     * docker:///var/run/docker.sock -> unix:///var/run/docker.sock
+     *
+     * @param endpoint
+     * @return
+     */
     protected URI parseURI(URI endpoint)
     {
         URIBuilder builder = new URIBuilder(endpoint);
@@ -53,12 +69,6 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         } catch (URISyntaxException e) {
             throw new RuntimeException("unable to build endpoint url", e);
         }
-    }
-
-    @Override
-    public boolean supports(URI endpoint)
-    {
-        return endpoint.getScheme().equals("docker");
     }
 
     class DockerMetadataCollector implements MetadataCollector
@@ -77,7 +87,6 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         {
             connect();
             ContainerInfo container = null;
-            ImageInfo image;
             try {
                 container = dockerClient.inspectContainer(containerId);
             } catch (DockerException | InterruptedException e) {
@@ -89,9 +98,8 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
                 .setHost(hostname)
                 .setImage(container.config().image())
                 .setIp(container.networkSettings().ipAddress())
-                // remove / at the beginning
-                .setName(container.name().substring(1))
-                ;
+                    // remove / at the beginning
+                .setName(container.name().substring(1));
 
             // loop through env variables
             for (String env : container.config().env()) {
@@ -125,6 +133,7 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
         {
             connect();
             try {
+                // call {get} for every container
                 List<Container> containers = dockerClient.listContainers();
                 return containers
                     .stream()
@@ -137,14 +146,21 @@ public class DockerMetadataCollectorProvider implements MetadataCollectorProvide
                             }
                         }
                     )
-                    .collect(Collectors.toMap(
+                    .collect(
+                        Collectors.toMap(
                             ContainerMetadata::getContainerId,
                             metadata -> metadata
-                    ));
+                        )
+                    );
             } catch (DockerException | InterruptedException e) {
                 throw new MetadataCollectorException("Failed to retrieve container list", e);
-            }        }
+            }
+        }
 
+        /**
+         * connect to the docker daemon
+         * @throws MetadataCollectorException
+         */
         protected void connect() throws MetadataCollectorException
         {
             if (connected) {

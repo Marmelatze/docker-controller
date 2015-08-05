@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * Listens to changes to the customer prefix and adds or removes marathon groups accordingly.
+ */
 public class CustomerService
 {
     private final CustomerStorage customerStorage;
@@ -28,7 +31,7 @@ public class CustomerService
     private void update(GroupTemplate template, Map<Integer, Customer> customers)
     {
         logger.info("Config was updated");
-        // always update. marathon will handle new groups and changes to existing
+        // always update. marathon will handle new groups and changes to existing groups.
         for (Map.Entry<Integer, Customer> entry : customers.entrySet()) {
             Customer customer = entry.getValue();
             try {

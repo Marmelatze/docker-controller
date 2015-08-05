@@ -27,11 +27,12 @@ public class AppParameters
     @Parameter(names = {"-proxy_port"}, description = "port for cadvisor proxy")
     public int cadvisorProxyPort = 4041;
 
-    @Parameter(names = "--help", help = true)
+    @Parameter(names = "--help", help = true, description = "show this help")
     public boolean help;
 
     public AppParameters()
     {
+        // try to get the system hostname
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {

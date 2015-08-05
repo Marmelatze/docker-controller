@@ -14,6 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Get statistics from marathon app with the label "scaling". And scale them with the given strategy.
+ * Currenty supported:
+ *
+ * * horizontal: Add more instances {Horizontal}
+ * * vertical: Increase assigned resources {Vertical}
+ */
 public class MarathonMonitor
 {
     public static final String LABEL_SCALING_STRATEGY = "scaling";
@@ -63,6 +70,10 @@ public class MarathonMonitor
         }
     }
 
+    /**
+     * get statistics and scale
+     * @param app
+     */
     private void checkApp(App app)
     {
         if (!app.getLabels().containsKey(LABEL_SCALING_STRATEGY)) {

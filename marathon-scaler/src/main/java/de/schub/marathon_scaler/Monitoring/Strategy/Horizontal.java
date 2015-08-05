@@ -7,6 +7,21 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * Dynamically scale a app horizontally (adds more instances)
+ * Configuration via marathon labels in the app configuration:
+ *
+ * ```json
+ * "labels": {
+ *    "scaling": "horizontal",
+ *    "scaling_max_instances": 4,
+ *    "scaling_min_instances": 1
+ * }
+ * ```
+ *
+ * Will scale up if CPU usage is > 90% or memory usage is > 90%.
+ * Will scale down if CPU usage is < 10% or memory usage is < 50%.
+ */
 public class Horizontal implements ScalingStrategy
 {
     public static final String NAME = "horizontal";

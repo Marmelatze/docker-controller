@@ -1,5 +1,8 @@
 package de.schub.marathon_scaler.Monitoring.Backend.Prometheus.Exception;
 
+/**
+ * Exception thrown while using prometheus
+ */
 public class PrometheusException extends Throwable
 {
     public PrometheusException()

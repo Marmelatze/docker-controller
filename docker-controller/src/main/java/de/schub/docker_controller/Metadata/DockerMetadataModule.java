@@ -14,6 +14,9 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Dagger Module for DockerMetadata
+ */
 @Module
 public class DockerMetadataModule
 {

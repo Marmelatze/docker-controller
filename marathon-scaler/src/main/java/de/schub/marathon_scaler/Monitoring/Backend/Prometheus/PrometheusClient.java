@@ -19,6 +19,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Client to make queries to prometheus
+ */
 public class PrometheusClient
 {
     Logger logger = LoggerFactory.getLogger(PrometheusClient.class);
@@ -26,6 +29,9 @@ public class PrometheusClient
     WebTarget target;
     Gson gson;
 
+    /**
+     * @param endpoint e.g. http://localhost:9090
+     */
     public PrometheusClient(URI endpoint)
     {
         Client client = ClientBuilder.newBuilder().build();
@@ -37,6 +43,7 @@ public class PrometheusClient
 
     /**
      * Query prometheus and return the result
+     *
      * @param expression
      * @return
      * @throws PrometheusException
@@ -60,6 +67,7 @@ public class PrometheusClient
 
     /**
      * Like query, but gets a single float value from the first result, when the query results in a vector
+     *
      * @param expression
      * @return
      */
@@ -93,6 +101,7 @@ public class PrometheusClient
                     return context.deserialize(json, PrometheusError.class);
                 case "vector":
                     return context.deserialize(json, VectorResponse.class);
+                // @TODO other types
             }
             return null;
         }

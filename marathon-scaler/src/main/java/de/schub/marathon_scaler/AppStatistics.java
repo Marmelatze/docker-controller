@@ -2,6 +2,9 @@ package de.schub.marathon_scaler;
 
 import java.util.Optional;
 
+/**
+ * Statistics for a marathon app obtained via a {MonitoringBackend}
+ */
 public class AppStatistics
 {
     Optional<Float> cpu;

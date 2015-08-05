@@ -50,22 +50,22 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         private final Consul consul;
 
         private final String prefix;
-
+        /**
+         * use services from remote consul nodes
+         */
+        private final boolean useRemoteServices;
         /**
          * Name of the node we are connected to
          */
         private ClusterNode node;
-
         /**
          * internal index for mapping container id to metadata
          */
         private ContainerMetadataMap containerIndex = new ContainerMetadataMap();
 
         /**
-         * use services from remote consul nodes
+         * whether we are connected to the consul agent
          */
-        private final boolean useRemoteServices;
-
         private boolean connected = false;
 
         /**
@@ -127,16 +127,14 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
         @Override
         public ContainerMetadata get(String containerId)
         {
-            ContainerMetadata metadata = decode(consul.keyValueClient().getValueAsString(getPrefix() + "/" + containerId).get());
+            ContainerMetadata metadata = decode(
+                consul.keyValueClient()
+                    .getValueAsString(getPrefix() + "/" + containerId)
+                    .get()
+            );
             containerIndex.add(metadata);
 
             return metadata;
-        }
-
-        @Override
-        public ContainerMetadata get(String nodeId, String containerId)
-        {
-            return decode(consul.keyValueClient().getValueAsString(prefix + "/" + nodeId + "/" + containerId).get());
         }
 
         @Override
@@ -173,6 +171,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
                 add(metadata);
                 addedContainers.add(getPrefix() + "/" + metadata.getContainerId());
             }
+
             // delete orphaned containers
             if (null == containers || containers.size() == 0) {
                 return;
@@ -184,17 +183,17 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
             ;
         }
 
-        public void delete(String containerId)
-        {
-            containerIndex.removeById(containerId);
-            consul.keyValueClient().deleteKey(getPrefix() + "/" + containerId);
-        }
-
         @Override
         public void delete(ContainerMetadata metadata)
         {
             containerIndex.remove(metadata);
             consul.keyValueClient().deleteKey(getPrefix() + "/" + metadata.getContainerId());
+        }
+
+        public void delete(String containerId)
+        {
+            containerIndex.removeById(containerId);
+            consul.keyValueClient().deleteKey(getPrefix() + "/" + containerId);
         }
 
         @Override
@@ -228,7 +227,7 @@ public class ConsulMetadataStorageProvider implements MetadataStorageProvider
                         consul.agentClient().deregister(service.getId());
                         continue;
                     }
-                    services.put(metadata.getContainerId(), new ContainerService());
+                    services.put(metadata.getContainerId(), new ContainerService(service.getId()));
                 }
 
                 return services;

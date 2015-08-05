@@ -5,6 +5,18 @@ import mesosphere.marathon.client.model.v2.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Dynamically scale a app verticalle (adds 50% more resources)
+ * Configuration via marathon labels in the app configuration:
+ *
+ * ```json
+ * "labels": {
+ *    "scaling": "vertical"
+ * }
+ * ```
+ *
+ *  Will scale up if CPU usage is > 90% or memory usage is > 90%.
+ */
 public class Vertical implements ScalingStrategy
 {
     public final static String NAME = "vertical";

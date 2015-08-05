@@ -2,6 +2,9 @@ package de.schub.docker_controller.Metadata;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * holds all imporant metadata for a container. Used for serialization and deserialization via GSON
+ */
 public class ContainerMetadata
 {
     @Expose

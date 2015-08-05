@@ -19,7 +19,7 @@ import java.util.Map;
  * Find consul services with the name docker and use them directly as metadata source.
  * This was intended to make running a separate docker-controller per node redundant.
  *
- * It works as intended but it doesn't handle dynamic cluster changes yet.
+ * It works as intended but it doesn't handle dynamic cluster changes yet (@TODO).
  * Also the automated cleanup of orphaned consul services doesn't work
  *
  * Config:
@@ -79,6 +79,7 @@ public class ConsulDockerMetadataCollectorProvider implements MetadataCollectorP
                 return;
             }
             connected = true;
+            // get all healthy docker services
             List<ServiceHealth> services = consulClient
                 .healthClient()
                 .getHealthyServiceInstances(serviceName)

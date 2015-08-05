@@ -19,6 +19,8 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'docker'
+
 
 mainClassName = "de.schub.marathon_scaler.Main"
 
@@ -43,6 +45,15 @@ run {
     if(project.hasProperty('args')){
         args project.args.split('\\s+')
     }
+}
+
+docker {
+    baseImage "develar/java:8u45"
+    maintainer 'Florian Pfitzer "florian@pfitzer.me"'
+}
+
+distDocker {
+    runCommand "apk --update add bash && rm -rf /tmp/* /var/cache/apk/*"
 }
 
 test {

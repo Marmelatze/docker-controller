@@ -2,6 +2,9 @@ package de.schub.marathon_scaler.Monitoring.Backend;
 
 import de.schub.marathon_scaler.AppStatistics;
 
+/**
+ * interface for a backend which can provide {AppStatistics}
+ */
 public interface MonitoringBackend
 {
     /**

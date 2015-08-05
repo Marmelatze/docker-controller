@@ -2,6 +2,9 @@ package de.schub.marathon_scaler.Monitoring.Strategy;
 
 import java.util.HashMap;
 
+/**
+ * Get a {ScalingStrategy} by its name
+ */
 public class StrategyFactory
 {
     private final HashMap<String, ScalingStrategy> strategies;

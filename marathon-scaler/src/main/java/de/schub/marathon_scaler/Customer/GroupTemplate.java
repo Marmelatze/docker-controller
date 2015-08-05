@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Template for a marathon group, which is used for multiple customers.
+ * Will replace all occurences of {customer_id} with the id of the customer.
+ * It will also keep settings (cpu, memory, instances) from scaled instances.
+ */
 public class GroupTemplate
 {
     private final Gson gson;
@@ -20,6 +25,12 @@ public class GroupTemplate
         this.templateJson = templateJson;
     }
 
+    /**
+     * create a concrete marathon group from the template
+     * @param customer Customer which this template is intended for
+     * @param oldGroup current group data from marathon
+     * @return
+     */
     public Group create(Customer customer, Group oldGroup)
     {
         String json2 = templateJson.replace("{customer_id}", Integer.toString(customer.getId()));

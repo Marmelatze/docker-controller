@@ -7,6 +7,9 @@ import org.apache.http.client.utils.URIBuilder;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+/**
+ * Provide {AppStatistics} from prometheus for a marathon app
+ */
 public class PrometheusBackend implements MonitoringBackend
 {
     PrometheusClient client;

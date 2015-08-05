@@ -6,9 +6,9 @@ import java.util.List;
 
 /**
  * supported endpoints:
- *   * consul://HOST:PORT/PREFIX
- *   * docker://HOST:PORT
+ *   * docker://host:port
  *   * docker:///var/run/docker.sock
+ *   * consul+docker://host:port/[service]
  */
 public class DefaultMetadataCollectorFactory implements MetadataCollectorFactory
 {
