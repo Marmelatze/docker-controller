@@ -97,7 +97,7 @@ Add the following to the labels of the marathon app:
 ```json
 "labels": {
     "scaling": "horizontal",
-    "scaling_max_instances": 4",
+    "scaling_max_instances": 4,
     "scaling_min_instances": 1
 }
 ```
