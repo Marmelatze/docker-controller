@@ -71,7 +71,7 @@ app when needed.
 Run via:
 
 ```bash
-docker run marmelatze/marathon-scaler -monitoring=http://127.0.0.1: -marathonURI=http://127.0.0.1:8080 -consul=http://127.0.0.1:8500
+docker run marmelatze/marathon-scaler -monitoring=http://127.0.0.1:9090 -marathonURI=http://127.0.0.1:8080 -consul=http://127.0.0.1:8500
 ```
 
 ```
