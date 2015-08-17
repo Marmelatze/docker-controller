@@ -21,7 +21,7 @@ public class Vertical implements ScalingStrategy
 {
     public final static String NAME = "vertical";
 
-    Logger logger = LoggerFactory.getLogger(Horizontal.class);
+    Logger logger = LoggerFactory.getLogger(Vertical.class);
 
 
     @Override

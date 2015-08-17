@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertSame;
 
-public class HorizontalTest
+public class HorizontalTest extends AbstractScalingTest
 {
     Horizontal horizontal;
     @Before
@@ -113,34 +113,16 @@ public class HorizontalTest
     }
 
 
-    private App createApp(int minInstances, int maxInstances)
+    protected App createApp(int minInstances, int maxInstances)
     {
+        App app = createApp();
         HashMap<String, String> labels = new HashMap<>();
         labels.put(MarathonMonitor.LABEL_SCALING_STRATEGY, Horizontal.NAME);
         labels.put(Horizontal.LABEL_MIN_INSTANCES, Integer.toString(minInstances));
         labels.put(Horizontal.LABEL_MAX_INSTANCES, Integer.toString(maxInstances));
-
-        App app = new App();
-        app.setId("/test");
         app.setLabels(labels);
-        app.setMem(64.0);
-        app.setCpus(0.5);
-        app.setInstances(1);
 
         return app;
     }
 
-    /**
-     * @param cpu current cpu usage in percent (0 to 1)
-     * @param memory current memory usage in megabytes
-     * @return
-     */
-    private AppStatistics createStatistics(float cpu, float memory)
-    {
-        AppStatistics statistics = new AppStatistics();
-        statistics.setCpu(Optional.of(cpu));
-        statistics.setMemory(Optional.of(memory * 1024 * 1024));
-
-        return statistics;
-    }
 }
